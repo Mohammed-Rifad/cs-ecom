@@ -17,9 +17,15 @@ function edit_product(id) {
     console.log(typeof(price));
     console.log(description)
 
+   
+    $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+        }
+    })
 
     $.ajax({
-        url: 'http://127.0.0.1:8000/reseller/updateProducts',
+         url: 'http://127.0.0.1:8000/reseller/update-product',
         type: 'POST',
         processData: false,
         contentType: false,

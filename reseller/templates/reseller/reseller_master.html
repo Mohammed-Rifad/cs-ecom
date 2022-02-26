@@ -20,7 +20,7 @@
 
     <nav class="theme-color navbar navbar-expand-lg navbar-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle">ALL</button>
-        <img src="{% static '/images/cs_ecom_logo.png' %}  " alt=" " class="logo-nav">
+        <img src="{% static 'reseller/cybersquare-logo.png' %}  " alt="img" class="logo-nav">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -28,14 +28,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto mt-2 mt-lg-0 font-weight-bold">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Current user
-          </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Manage account</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Logout</a>
-                    </div>
+                   
+                            <form action="{% url 'reseller:logout' %}" method="POST" >
+                                {% csrf_token %}
+                                <input type="submit" value="Logout" class="btn btn-danger" name="" id="">
+                            </form>
+          
+                   
                 </li>
             </ul>
         </div>
@@ -45,9 +44,9 @@
         <!-- Sidebar -->
         <div class="bg-light border-right" id="sidebar-wrapper">
             <div class="theme-color list-group list-group-flush">
-                <a href="{% url 'reseller_home' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="home">Home</a>
-                <a href="{% url 'reseller_products' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="products">All Products</a>
-                <a href="{% url 'reseller_addProducts' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="addProduct">Add a product</a>
+                <a href="{% url 'reseller:reseller_home' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="home">Home</a>
+                <a href="{% url 'reseller:view_products' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="products">All Products</a>
+                <a href="{% url 'reseller:add_product' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="addProduct">Add a product</a>
                 <a href="#" class="bg-light list-group-item list-group-item-action font-weight-bold">Option 2</a>
                 <a href="#" class="bg-light list-group-item list-group-item-action font-weight-bold">Option 3</a>
             </div>
@@ -90,52 +89,52 @@
         // //     });
         // // });
     </script>
+
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields
     </script>
 
-    <footer class="foot text-center text-lg-start" style="background-color: #e0f2f1;">
-        <div class="container p-4">
-            <div class="row">
-                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-                    <h5 class="text-uppercase">Registred office address</h5>
-                    <p>
-                        5th Floor, CAFIT Square, Hilite Business Park, Thondayad Bye-Pass Thondayad, Hilite City, Poovangal, Kozhikode, Kerala 673016
-                    </p>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0" style="text-align: left;">
-                    <h5 class="text-uppercase">POLICY</h5>
-                    <ul class="list-unstyled mb-0">
-                        <li><a href="#!" class="text-dark">Return Policy</a></li>
-                        <li><a href="#!" class="text-dark">Terms of use</a></li>
-                        <li><a href="#!" class="text-dark">Security</a></li>
-                        <li><a href="#!" class="text-dark">Privacy</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0" style="text-align: left;">
-                    <h5 class="text-uppercase mb-0">About</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#!" class="text-dark">Contact Us</a></li>
-                        <li><a href="#!" class="text-dark">About Us</a></li>
-                        <li><a href="#!" class="text-dark">Careers</a></li>
-                        <li><a href="#!" class="text-dark">Cybersquare Wholesale</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0" style="text-align: left;">
-                    <h5 class="text-uppercase mb-0">Social</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#!" class="text-dark">Facebook</a></li>
-                        <li><a href="#!" class="text-dark">Twitter</a></li>
-                        <li><a href="#!" class="text-dark">Youtube</a></li>
-                    </ul>
-                </div>
+<footer class="foot text-center text-lg-start" style="background-color: #e0f2f1;">
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Registred office address</h5>
+                <p>
+                    5th Floor, CAFIT Square, Hilite Business Park, Thondayad Bye-Pass Thondayad, Hilite City, Poovangal, Kozhikode, Kerala 673016
+                </p>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0" style="text-align: left;">
+                <h5 class="text-uppercase">POLICY</h5>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="#!" class="text-dark">Return Policy</a></li>
+                    <li><a href="#!" class="text-dark">Terms of use</a></li>
+                    <li><a href="#!" class="text-dark">Security</a></li>
+                    <li><a href="#!" class="text-dark">Privacy</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0" style="text-align: left;">
+                <h5 class="text-uppercase mb-0">About</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#!" class="text-dark">Contact Us</a></li>
+                    <li><a href="#!" class="text-dark">About Us</a></li>
+                    <li><a href="#!" class="text-dark">Careers</a></li>
+                    <li><a href="#!" class="text-dark">Cybersquare Wholesale</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0" style="text-align: left;">
+                <h5 class="text-uppercase mb-0">Social</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#!" class="text-dark">Facebook</a></li>
+                    <li><a href="#!" class="text-dark">Twitter</a></li>
+                    <li><a href="#!" class="text-dark">Youtube</a></li>
+                </ul>
             </div>
         </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
-            <img src="{% static 'ecom/images/cards.png' %}" class="img-fluid w-25" alt="">
-        </div>
-    </footer>
-
+    </div>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+        <img src="{% static 'ecom/images/cards.png' %}" class="img-fluid w-25" alt="">
+    </div>
+</footer>
    
 </body>
 

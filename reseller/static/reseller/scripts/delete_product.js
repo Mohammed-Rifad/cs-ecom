@@ -1,8 +1,8 @@
 function delete_product(id) {
     var del_id = id;
-    console.log("idididid", del_id + 1)
+    
     $.ajax({
-        url: 'deleteProducts',
+        url: 'product-del',
         type: 'GET',
         // processData: false,
         // contentType: false,
@@ -12,8 +12,8 @@ function delete_product(id) {
 
         success: function(response) {
 
-            toastr.success(response.msg);
-
+            
+            window.location.href='http://127.0.0.1:8000/reseller/all-products'
 
         },
         error: function(response) {

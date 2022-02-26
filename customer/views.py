@@ -124,12 +124,13 @@ def login(request):
                 
         elif user_name.isdigit():
 
-            seller_exist=Resellers.objects.filter(user_id=user_name).exists()
+            seller_exist=Resellers.objects.filter(user_id=user_name,passwd=passwd).exists()
             if seller_exist:
                 seller_data=Resellers.objects.get(user_id=user_name,passwd=passwd)
                
                 if seller_data.status=='active':
                     request.session['s_id']=seller_data.id
+                    
                     return redirect('reseller:reseller_home')
                 else:
                      

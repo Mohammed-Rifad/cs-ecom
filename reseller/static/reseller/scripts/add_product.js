@@ -5,7 +5,7 @@ var submenu = {
 }
 
 function makeSubmenu(value) {
-    console.log("hureyyy", value)
+   
     if (value.length == 0) {
         document.getElementById("subcategory").innerHTML = "<option></option>";
     } else {
@@ -78,18 +78,27 @@ function add_products() {
     formdata.append('vendor', vendor);
     formdata.append('status', status);
 
+    $.ajaxSetup({
+        headers: {
+          "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
+        }
+    })
     $.ajax({
-
-        url: 'addProducts',
+        
+     
+         url: 'http://127.0.0.1:8000/reseller/add-product',
         type: 'POST',
 
         processData: false,
         contentType: false,
         data: formdata,
         success: function(response) {
-            toastr.success(response.msg);
+            if(response.res==true) 
+            toastr.success('Product Added Succesfully')
 
-
+            else 
+                toastr.error('Product Reg ID already Added');
+             
         },
     });
 }

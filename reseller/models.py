@@ -22,3 +22,22 @@ class Resellers(models.Model):
 
     class Meta:
         db_table='reseller_tb'
+
+
+class Products(models.Model):
+    title = models.CharField(max_length=30,db_column='title')
+    reg_product_id = models.CharField(max_length=12,db_column='p_id')
+    desc = models.TextField(db_column='desc')
+    img = models.ImageField(upload_to = 'product_images/', blank = True, null = True,db_column='img')
+    price = models.IntegerField(db_column='price')
+    quantity = models.IntegerField(db_column='qty')
+    weight = models.IntegerField(db_column='wt')
+    weight_unit = models.CharField(max_length=12,db_column='unit')
+    category = models.CharField(max_length=12,db_column='cat')
+    subcategory = models.CharField(max_length=12,db_column='sub_cat')
+    vendor = models.CharField(max_length=100,db_column='vendor')
+    status = models.CharField(max_length=100,db_column='status')
+    reseller = models.ForeignKey(Resellers, on_delete=models.CASCADE,db_column='reseller')
+
+    class Meta:
+        db_table='product_tb'
