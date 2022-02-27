@@ -1,20 +1,23 @@
 from random import randint
+import razorpay
 from tracemalloc import get_traced_memory
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from random import randint
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Q
 # from ..reseller import models
 # from e_commerce.reseller.models import Resellers
 from django.utils.crypto import get_random_string
 
-from reseller.models import Resellers
-from .models import Customer
+from reseller.models import Resellers,Products
+from .models import *
 
 # Create your views here.
 
 def index(request):
-    return render(request,'index.html')
+    return render(request,'customer/index.html')
 
 def signup(request):
 
@@ -90,9 +93,9 @@ def signup(request):
                 msg='Registration Successfull'
             else:
                 msg='Email Exist'   
-            return render(request,'signup.html',{'msg':msg,})
+            return render(request,'customer/signup.html',{'msg':msg,})
 
-    return render(request,'signup.html')
+    return render(request,'customer/signup.html')
 
 def login(request):
 
@@ -139,7 +142,7 @@ def login(request):
                     return render(request, 'login.html', {'error': 'UserName Or Password Incorrect'})
 
 
-    return render(request,'login.html')
+    return render(request,'customer/login.html')
 
 def verify_otp(request):
     
@@ -153,14 +156,203 @@ def verify_otp(request):
             Customer.objects.filter(id=c_id).update(status='active')
             return redirect('customer:cust_home')
         else:
-            return render(request, "verify_otp.html", {"msg": "Invalid otp"})
-    return render(request,'verify_otp.html')
+            return render(request, "customer/verify_otp.html", {"msg": "Invalid otp"})
+    return render(request,'customer/verify_otp.html')
 
 def customer_home(request):
-    return render(request,'home.html')
+    return render(request,'customer/home.html')
+
+def search_products(request):
+    # search data based on keyword
+    if request.method == "POST":
+        search_word = request.POST['searchdata']
+        search_list=search_word.split(' ')
+        print(search_word)
+        srch_products=Products.objects.filter(Q(vendor__icontains=search_word)|Q(title__icontains=search_word)| Q(category__icontains=search_word)|Q(subcategory__icontains=search_word),status='active' )
+
+        # srch_products=Products.objects.filter(Q(title__icontains=search_word) | Q(vendor__icontains=search_word) | Q(category__icontains=search_word) | Q(subcategory__icontains=search_word), status='Active')
+        print(srch_products)
+        # Rendering search product page
+        return render(request, "customer/search_products.html",{"search_products":srch_products})
+    else:
+        return redirect('customer:index')
+
+
+def view_product(request,id):
+    product = Products.objects.get(id=id)
+    return render(request, "customer/view_product.html",{ 'product': product, })
+
+
+def add_to_bag(request):
+
+    prod_id=Products.objects.get(id=request.POST['id'])
+    quantity=request.POST['quantity']
+    cust_id=Customer.objects.get(id=request.session['cust_id'])
+    order_data=Orders(product_id=prod_id,qty=quantity,customer_id=cust_id,status='added_to_bag')
+    order_data.save()
+    return JsonResponse({"status": "success"})
+    
+
+
 
 def cust_logout(request):
     if 'cust_id' in request.session:
         del request.session['cust_id']
         request.session.flush()
-    return redirect('customer:index')
+    return redirect('customer:cust_home')
+
+
+def view_bag(request):
+    total=0
+    if request.method == 'POST':
+        pass
+        # cust_id = request.session['cust_id']
+        # bagdata = Orders.objects.filter(customerid=cust_id, status='added_to_bag')
+        # bag_ids = bagdata.values_list('product_id_id')
+        # productdata = Products.objects.filter(id__in=bag_ids)
+        # bgdata=[{'email': usr.email, 'joindate': usr.date_joined} for bg in bgdata]
+    else:
+        cust_id = request.session['cust_id']
+        bag_data = Orders.objects.filter(customer_id=cust_id, status='added_to_bag')
+        # bag_ids = bag_data.values_list('product_id_id')
+        # products = Products.objects.filter(id__in=bag_ids)
+        # price = 0
+        # for prod in products:
+        #     for bg in bag_data:
+        #         if bg.product_id_id == prod.id:
+        #             price = price + (bg.qty * prod.price)
+        # print(price)
+
+        for prod in bag_data:
+            price=prod.product_id.price*prod.qty
+            total+=price
+
+        return render(request,"customer/view_bag.html",{'bag_data': bag_data,  'total': total})
+
+
+def update_quantity(request):
+
+    total=0
+    qty=request.GET['qty']
+    order_id=request.GET['ord_id']
+    order_detail=Orders.objects.get(id=order_id)
+    order_detail.qty=qty
+    
+    order_detail.save()
+    product_total=order_detail.product_id.price* int(qty)
+    bag_data = Orders.objects.filter(customer_id=request.session['cust_id'],status='added_to_bag')
+    for prod in bag_data:
+            price=prod.product_id.price*prod.qty
+            total+=price
+    # return HttpResponse('')
+    # order_quantity=request.GET['quanity']
+    # print(order_quantity)
+    # order_id=request.GET['id']
+    # print(order_id)
+    # Orders.objects.filter(id=order_id).update(quantity=order_quantity)
+    # cust_id = request.session['customerid']
+    # bagdata = Orders.objects.filter(customerid=cust_id, status='added_to_bag')
+    # bag_ids = bagdata.values_list('product_id_id')
+    # productdata = Products.objects.filter(id__in=bag_ids)
+    # price = 0
+    # for prod in productdata:
+    #     for bg in bagdata:
+    #         if bg.product_id_id == prod.id:
+    #             price = price + (bg.quantity * prod.price)
+    print('***********',product_total)
+    return JsonResponse({"total": total,"product_total":product_total})
+
+def order_product(request):
+    user_id=request.session['cust_id']
+
+    # print('******************',request.POST['total'])
+    products_orderdata = Orders.objects.filter(customer_id=user_id, status='added_to_bag')
+    # return HttpResponse()
+    order_amount = 28999
+    order_currency = 'INR'
+    order_receipt = 'order_rcptid_11'
+    notes = {'Shipping address': 'Bommanahalli, Bangalore'}
+    type(order_amount)
+    client = razorpay.Client(auth=('rzp_test_jznmHCFBf6ZMUd','hMGwzenl3b1QwDmJxDtyAUNy'))
+    payment = client.order.create({"amount": order_amount, "currency": order_currency, "receipt": order_receipt, 'notes': notes})
+    return JsonResponse( payment)
+
+def update_payment(request):
+    print('reached here')
+    Orders.objects.filter(customer_id=request.session['cust_id'], status='added_to_bag').update(status='paid')
+    return JsonResponse({'resp': "success"})
+
+def view_orders(request):
+    cust_id = request.session['cust_id']
+    bag_data = Orders.objects.filter(customer_id=cust_id, status='paid')
+    
+
+    return render(request,"customer/view_orders.html",{'bag_data': bag_data, })
+
+def change_password(request):
+    
+    cust_data = Customer.objects.get(id=request.session['cust_id'])
+
+    if request.method=='POST':
+
+        password=request.POST['password']
+        otp=request.POST['otp']
+
+        if cust_data.otp==otp:
+            cust_data.passwd=password
+            cust_data.save()
+            return JsonResponse({'res':'Password Updated','status':'success'})
+        else:
+            return JsonResponse({'res':'Invalid Otp','status':'error'})
+
+    customer_email=cust_data.email
+    otp = randint(1000, 9999)
+    send_mail(
+            'verify otp',
+            str(otp),
+            settings.EMAIL_HOST_USER,
+            [customer_email],
+            
+        )
+    cust_data.otp=otp
+    cust_data.save()
+    return render(request, "customer/change_password.html")
+
+    #         except Customer.DoesNotExist:
+    #             # Send otp to Resellers for changing password
+    #             reseldata = Resellers.objects.filter(login_id=user.id)
+    #             otp = randint(1000, 9999)
+    #             send_mail(
+    #                     'please verify your otp',
+    #                     str(otp),
+    #                     EMAIL_HOST_USER,
+    #                     [username],
+    #                     fail_silently=False,
+    #                 )
+    #             reseldata.update(otp=otp)
+    #         # Return OTP send successfull message with a status
+    #         return JsonResponse({'message': 'OTP send to your email, Please verify it', 'status': 'success', 'userid': username})
+    #     except User.DoesNotExist:
+    #         # Return OTP send Failed message with a status
+    #         return JsonResponse({'message': 'Invalid username', 'status': 'failed'})
+    # # Render otp verification page
+    # else:
+def view_profile(request):
+    id = request.session['cust_id']
+    customer_data = Customer.objects.get(id=id)
+    return render(request, 'customer/profile.html', {'profile': customer_data,})
+
+def update_profile(request):
+    fname = request.POST['firstname']
+    lname = request.POST['lastname']
+    address = request.POST['address']
+    country = request.POST['country']
+    mobile = request.POST['mobile']
+    id = request.session['cust_id']
+    # User.objects.filter(id=id).update(first_name=fname, last_name=lname)
+    Customer.objects.filter(id=id).update(first_name=fname, mobile=mobile, address=address, country=country,)
+    custdata = Customer.objects.get(id=id)
+    customerdata = {'firstname': custdata.first_name,'lastname': custdata.last_name, 'gender': custdata.gender, 'dateofbirth': custdata.dob, 'mobile': custdata.mobile, 'address': custdata.address, 'country': custdata.country,'email': custdata.email}
+    # userdata = User.objects.get(id=id)
+    # usrdata = {'lastname': userdata.last_name, 'email': userdata.email }
+    return JsonResponse({"custdata": customerdata, })

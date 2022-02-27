@@ -1,5 +1,7 @@
+import datetime
+import imp
 from django.db import models
-
+from reseller.models import Products
 # Create your models here.
 
 # class UserDetails(models.Model):
@@ -26,3 +28,14 @@ class Customer(models.Model):
 
     class Meta:
         db_table="customer_tb"
+
+
+class Orders(models.Model):
+    product_id = models.ForeignKey(Products, on_delete=models.CASCADE,db_column='p_id')
+    customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE,db_column='c_id')
+    order_date = models.DateField(default=datetime.date.today,db_column='ord_date')
+    qty = models.IntegerField(db_column='qty')
+    status = models.CharField(max_length=30,db_column='status')
+
+    class Meta:
+        db_table="order_tb"
