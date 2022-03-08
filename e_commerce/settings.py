@@ -82,18 +82,18 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 
 DATABASES={
    'default':{
-    #   'ENGINE':'django.db.backends.postgresql_psycopg2',
-    #   'NAME':'db_ecom',
-    #   'USER':'postgres',
-    #   'PASSWORD':'root',
-    #   'HOST':'localhost',
-    #   'PORT':'5432',
+      'ENGINE':'django.db.backends.postgresql_psycopg2',
+      'NAME':'db_ecom',
+      'USER':'postgres',
+      'PASSWORD':'root',
+      'HOST':'localhost',
+      'PORT':'5432',
 
-    'Host':'ec2-18-210-191-5.compute-1.amazonaws.com',
-'Database':'d2erefgo7s3eqi',
-"User":'hlezmckhnlnvfm',
-'Port':'5432',
-'Password':'7438d07e488610a3b70b84e440907a72b17057e1b629ca067894a16ebd7f3928'
+#     'Host':'ec2-18-210-191-5.compute-1.amazonaws.com',
+# 'Database':'d2erefgo7s3eqi',
+# "User":'hlezmckhnlnvfm',
+# 'Port':'5432',
+# 'Password':'7438d07e488610a3b70b84e440907a72b17057e1b629ca067894a16ebd7f3928'
 
 
    }
@@ -151,7 +151,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = 'mohammedrifad17@gmail.com'
 EMAIL_HOST_PASSWORD = 'jinna216'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

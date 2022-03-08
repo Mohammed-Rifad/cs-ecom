@@ -62,7 +62,7 @@
 <script>
     function pay() {
         amount = $("#total_amount").val()
-        console.log(amount);
+        console.log('amount is',amount);
         $.ajaxSetup({
             headers: {
               "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
@@ -78,7 +78,7 @@
                 console.log("payment_id = " + response.id);
                 var options = {
                     "key": "rzp_test_jznmHCFBf6ZMUd", // Enter the Key ID generated from the Dashboard
-                    "amount": '100000', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                     "currency": "INR",
                     "name": "Cybersquare",
                     "description": "Place order",

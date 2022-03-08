@@ -53,7 +53,7 @@ def view_products(request):
 
 @auth_seller
 def edit_product(request,id):
-
+    
     product=Products.objects.get(id=id)
     return render(request,'reseller/edit_product.html',{'product':product,})
 
@@ -61,12 +61,12 @@ def edit_product(request,id):
 def update_product(request):
     if request.method == "POST":
         
-        product_id = request.POST['id']
-        title = request.POST['title']
-        description = request.POST['description']
-        price = request.POST['price']
-        quantity = request.POST['quantity']
-        status = request.POST['status']
+        product_id = request.POST['id'].strip()
+        title = request.POST['title'].strip()
+        description = request.POST['description'].strip()
+        price = request.POST['price'].strip()
+        quantity = request.POST['quantity'].strip()
+        status = request.POST['status'].strip()
         print(title,'*************************',len(title))
         Products.objects.filter(id=product_id).update(title=title,desc=description,
         price=price,quantity=quantity,status=status)

@@ -7,15 +7,16 @@ function edit_product(id) {
     description = $('#description').text();
     price = parseInt($('#price').text());
     quantity = parseInt($('#quantity').text());
-    status = $('#status').text();
+    stats = $('#status').text();
+    console.log("hai"+stats)
     formdata.append('id', product_id);
     formdata.append('title', title);
     formdata.append('description', description);
     formdata.append('price', price);
     formdata.append('quantity', quantity);
-    formdata.append('status', status);
-    console.log(typeof(price));
-    console.log(description)
+    formdata.append('status', stats);
+    console.log("consoling form data");
+    console.log('form data ios',formdata)
 
    
     $.ajaxSetup({
