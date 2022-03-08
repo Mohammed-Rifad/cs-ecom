@@ -22,6 +22,8 @@ urlpatterns = [
     path('change-passwd', views.change_password, name='change_passwd'),
     path('profile', views.view_profile, name='profile'),
     path('edit-profile', views.update_profile, name='update_profile'),
+    path('password-otp', views.send_otp, name='send_otp'),
+    path('forgot-passwd', views.forgot_passwd, name='forgot')
 
 
 

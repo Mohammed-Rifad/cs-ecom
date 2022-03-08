@@ -21,7 +21,7 @@ class Resellers(models.Model):
     status = models.CharField(max_length=20, default= 'inactive')
 
     class Meta:
-        db_table='reseller_tb'
+        db_table='resellers'
 
 
 class Products(models.Model):
@@ -40,4 +40,4 @@ class Products(models.Model):
     reseller = models.ForeignKey(Resellers, on_delete=models.CASCADE,db_column='reseller')
 
     class Meta:
-        db_table='product_tb'
+        db_table='products'

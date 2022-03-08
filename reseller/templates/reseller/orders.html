@@ -1,7 +1,8 @@
-{% extends "reseller/reseller_master.html" %} {% block content %}{% load static %}
+{% extends "reseller/reseller_master.html" %} {% block reseller_content %}{% load static %}
 
 <div class="container">
     <div class="row" style="min-height: 300px;">
+        {% if orders %}
         <h2 class=mt-2>Your Orders</h2>
         <table class="table table-striped">
             <thead>
@@ -14,26 +15,15 @@
                 </tr>
             </thead>
             <tbody>
-                {% for order in bag_data %}
+                {% for order in orders %}
+            
                 <tr>
-                    <!-- <td></td> -->
-
-                    {% comment %} {% for product in product_data %} {% if order.product_id_id == product.id %}
-                    <td><img src="/media/{{ product.img }}" alt="" srcset="" height="100px" width="100px"></td>
-                    <td>{{ product.title }}</td>
-                    <td>
-                        <input type="number" onchange="update_quantity(this,'{{order.id}}','{{ product.price }}','price{{ forloop.parentloop.counter }}')" value="{{ order.quantity }}" min="1" max="99" style="width: 40px;">
-                    </td>
-                    <td><span>&#8377;</span><input type="number" id="price{{ forloop.parentloop.counter }}" value="{{ product.price }}" min="1" readonly></td>
-                    {% endif %}{% endfor %}
-                </tr>
-                {% endfor %} {% endcomment %}
-                {% comment %} {% for product in product_data %} {% if order.product_id_id == product.id %} {% endcomment %}
-                <td><img src="{{order.product_id.img.url }}" alt="" srcset="" height="100px" width="100px"></td>
+                   
+                <td><img src="{{order.product_id.img.url }}" alt="" srcset="" height="80px" width="80px"></td>
                 <td>{{ order.product_id.title|title }}</td>
                 <td>
                     {% comment %} <input type="number" onchange="update_quantity(this,'{{order.id}}','{{ product.price }}','price{{ forloop.parentloop.counter }}')" value="{{ order.qty }}" min="1" max="99" style="width: 40px;"> {% endcomment %}
-                    <input type="number" readonly value="{{ order.qty }}" min="1" max="99" style="width: 40px;">
+                    {{order.qty}} No{{order.qty|pluralize}}
                 
                 </td>
                 <td>
@@ -41,7 +31,7 @@
                     {% comment %} <input type="text" readonly value="{{ order.order_date }}"  > {% endcomment %}
                     {{ order.order_date }}
                 </td>
-                <td><span>&#8377;</span><input type="number" id="price{{ order.id }}" value="{% widthratio order.product_id.price 1 order.qty   %}" min="1" readonly></td>
+                <td><span>&#8377; </span>{% widthratio order.product_id.price 1 order.qty   %}</td>
                 {% comment %} {% endif %} {% endcomment %}
                 	 
             </tr>
@@ -50,7 +40,9 @@
 
             </tbody>
         </table>
-        
+        {% else %}
+                    <h1 class="text-danger" style="margin-left:300px;margin-top:100px">No Orders Yet</h1>
+        {% endif %}
     </div>
 </div> 
 

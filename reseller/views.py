@@ -1,7 +1,10 @@
 from itertools import product
 from os import stat
-from django.http import JsonResponse
+import re
+from django import http
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from customer.models import Orders
 
 from e_commerce.auth_gaurd import auth_seller
 from .models import *
@@ -82,3 +85,8 @@ def logout(request):
     del request.session['s_id']
     request.session.flush()
     return redirect('customer:login')
+
+def view_orders(request):
+    
+    order_details=Orders.objects.filter(reseller=request.session['s_id'])
+    return render(request,'reseller/orders.html',{'orders':order_details})

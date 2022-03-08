@@ -20,7 +20,7 @@
 
     <nav class="theme-color navbar navbar-expand-lg navbar-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle">ALL</button>
-        <img src="{% static 'reseller/cybersquare-logo.png' %}  " alt="img" class="logo-nav">
+        <img src="{% static 'reseller/cs_ecom_logo.png' %}  " alt="img" class="logo-nav">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -47,7 +47,7 @@
                 <a href="{% url 'reseller:reseller_home' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="home">Home</a>
                 <a href="{% url 'reseller:view_products' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="products">All Products</a>
                 <a href="{% url 'reseller:add_product' %}" class="bg-light list-group-item list-group-item-action font-weight-bold" id="addProduct">Add a product</a>
-                <a href="#" class="bg-light list-group-item list-group-item-action font-weight-bold">Option 2</a>
+                <a href="{% url 'reseller:orders' %}" class="bg-light list-group-item list-group-item-action font-weight-bold">View Orders</a>
                 <a href="#" class="bg-light list-group-item list-group-item-action font-weight-bold">Option 3</a>
             </div>
         </div>

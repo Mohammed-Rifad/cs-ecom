@@ -1,16 +1,8 @@
 import datetime
 import imp
 from django.db import models
-from reseller.models import Products
+from reseller.models import Products, Resellers
 # Create your models here.
-
-# class UserDetails(models.Model):
-#     user_name=models.CharField(max_length=20,db_column='u_name')
-#     passwd=models.CharField(max_length=20,db_column='passwd')
-#     type=models.IntegerField(db_column='type')
-
-#     class Meta:
-#         db_table='user_tb'
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=30,db_column='f_name')
@@ -27,15 +19,16 @@ class Customer(models.Model):
     status = models.CharField(max_length=20, default="",db_column='status')
 
     class Meta:
-        db_table="customer_tb"
+        db_table="customer"
 
 
 class Orders(models.Model):
     product_id = models.ForeignKey(Products, on_delete=models.CASCADE,db_column='p_id')
+    reseller = models.ForeignKey(Resellers, on_delete=models.CASCADE,db_column='reseller',null=True)
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE,db_column='c_id')
     order_date = models.DateField(default=datetime.date.today,db_column='ord_date')
     qty = models.IntegerField(db_column='qty')
     status = models.CharField(max_length=30,db_column='status')
 
     class Meta:
-        db_table="order_tb"
+        db_table="orders"

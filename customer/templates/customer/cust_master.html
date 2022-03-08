@@ -51,7 +51,7 @@
                         <a class="dropdown-item" href="{% url 'customer:profile' %}" type="button">Profile</a>
                         <a class="dropdown-item" type="button" href="{% url 'customer:bag' %}">View Bag</a>
                         <a class="dropdown-item" type="button" href="{% url 'customer:my_orders' %}">My orders</a>
-                        <a class="dropdown-item" href="{% url 'customer:change_passwd' %}" type="button">Change password</a>
+                        <a class="dropdown-item" href="{% url 'customer:send_otp' %}" type="button">Change password</a>
                         <a class="dropdown-item" href="{% url 'customer:logout' %}" type="button">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
                     </div>
                 </div>
@@ -103,8 +103,11 @@
             </div>
         </ul>
     </nav>
-    {% block content %}
-    {% endblock %}
+    <div style="min-height:400px">
+        {% block content %}
+        {% endblock %}
+    </div>
+  
     <!-- Navigation bar ends here -->
     <footer class="foot text-center text-lg-start" style="background-color: #e0f2f1;">
         <div class="container p-4">

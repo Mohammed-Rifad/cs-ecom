@@ -7,6 +7,7 @@ from random import randint
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Q
+from reseller.models import Resellers
 # from ..reseller import models
 # from e_commerce.reseller.models import Resellers
 from django.utils.crypto import get_random_string
@@ -106,6 +107,7 @@ def login(request):
 
         if '@' in user_name:
             customer_exist=Customer.objects.filter(email=user_name,passwd=passwd).exists()
+            print(customer_exist)
             if customer_exist:
                 customer=Customer.objects.get(email=user_name,passwd=passwd)
                 request.session['cust_id']=customer.id
@@ -123,7 +125,7 @@ def login(request):
                     return redirect('customer:verify_otp')
                 return redirect('customer:cust_home')
             else:
-                return render(request, 'login.html', {'error': 'Invalid user details'})
+                return render(request, 'customer/login.html', {'error': 'Invalid user details'})
                 
         elif user_name.isdigit():
 
@@ -137,9 +139,9 @@ def login(request):
                     return redirect('reseller:reseller_home')
                 else:
                      
-                    return render(request, 'login.html', {'error': 'Account Not Approved Yet'})
+                    return render(request, 'customer/login.html', {'error': 'Account Not Approved Yet'})
             else:
-                    return render(request, 'login.html', {'error': 'UserName Or Password Incorrect'})
+                    return render(request, 'customer/login.html', {'error': 'UserName Or Password Incorrect'})
 
 
     return render(request,'customer/login.html')
@@ -186,12 +188,17 @@ def view_product(request,id):
 def add_to_bag(request):
 
     prod_id=Products.objects.get(id=request.POST['id'])
+    reseller_id=Resellers.objects.get(id=prod_id.reseller.id)
     quantity=request.POST['quantity']
     cust_id=Customer.objects.get(id=request.session['cust_id'])
-    order_data=Orders(product_id=prod_id,qty=quantity,customer_id=cust_id,status='added_to_bag')
-    order_data.save()
-    return JsonResponse({"status": "success"})
-    
+    data_exist=Orders.objects.filter(customer_id=request.session['cust_id'],product_id=prod_id)
+    if not data_exist:
+        order_data=Orders(product_id=prod_id,qty=quantity,customer_id=cust_id,status='added_to_bag',reseller=reseller_id    )
+        order_data.save()
+        return JsonResponse({"status": "success"})
+    else:
+        return JsonResponse({"status": "error"})
+
 
 
 
@@ -244,30 +251,15 @@ def update_quantity(request):
     for prod in bag_data:
             price=prod.product_id.price*prod.qty
             total+=price
-    # return HttpResponse('')
-    # order_quantity=request.GET['quanity']
-    # print(order_quantity)
-    # order_id=request.GET['id']
-    # print(order_id)
-    # Orders.objects.filter(id=order_id).update(quantity=order_quantity)
-    # cust_id = request.session['customerid']
-    # bagdata = Orders.objects.filter(customerid=cust_id, status='added_to_bag')
-    # bag_ids = bagdata.values_list('product_id_id')
-    # productdata = Products.objects.filter(id__in=bag_ids)
-    # price = 0
-    # for prod in productdata:
-    #     for bg in bagdata:
-    #         if bg.product_id_id == prod.id:
-    #             price = price + (bg.quantity * prod.price)
+   
     print('***********',product_total)
     return JsonResponse({"total": total,"product_total":product_total})
 
 def order_product(request):
     user_id=request.session['cust_id']
 
-    # print('******************',request.POST['total'])
+    
     products_orderdata = Orders.objects.filter(customer_id=user_id, status='added_to_bag')
-    # return HttpResponse()
     order_amount = 28999
     order_currency = 'INR'
     order_receipt = 'order_rcptid_11'
@@ -301,22 +293,28 @@ def change_password(request):
         if cust_data.otp==otp:
             cust_data.passwd=password
             cust_data.save()
+            # return redirect('customer:cust_home')
             return JsonResponse({'res':'Password Updated','status':'success'})
         else:
             return JsonResponse({'res':'Invalid Otp','status':'error'})
+    # else:
+    #         return redirect('customer:cust_home')
+    # if request.method=='GET':
+    #     return redirect('customer:cust_home')
 
-    customer_email=cust_data.email
-    otp = randint(1000, 9999)
-    send_mail(
-            'verify otp',
-            str(otp),
-            settings.EMAIL_HOST_USER,
-            [customer_email],
+    return render(request, "customer/change_password.html",{'msg':'Otp has been sent to your email',})
+    # customer_email=cust_data.email
+    # otp = randint(1000, 9999)
+    # send_mail(
+    #         'verify otp',
+    #         str(otp),
+    #         settings.EMAIL_HOST_USER,
+    #         [customer_email],
             
-        )
-    cust_data.otp=otp
-    cust_data.save()
-    return render(request, "customer/change_password.html")
+    #     )
+    # cust_data.otp=otp
+    # cust_data.save()
+    
 
     #         except Customer.DoesNotExist:
     #             # Send otp to Resellers for changing password
@@ -356,3 +354,34 @@ def update_profile(request):
     # userdata = User.objects.get(id=id)
     # usrdata = {'lastname': userdata.last_name, 'email': userdata.email }
     return JsonResponse({"custdata": customerdata, })
+
+def send_otp(request):
+    cust_data = Customer.objects.get(id=request.session['cust_id'])
+
+    # if request.method=='POST':
+
+    #     password=request.POST['password']
+    #     otp=request.POST['otp']
+
+    #     if cust_data.otp==otp:
+    #         cust_data.passwd=password
+    #         cust_data.save()
+    #         return JsonResponse({'res':'Password Updated','status':'success'})
+    #     else:
+    #         return JsonResponse({'res':'Invalid Otp','status':'error'})
+
+    customer_email=cust_data.email
+    otp = randint(1000, 9999)
+    send_mail(
+            'verify otp',
+            str(otp),
+            settings.EMAIL_HOST_USER,
+            [customer_email],
+            
+        )
+    cust_data.otp=otp
+    cust_data.save()
+    return redirect('customer:change_passwd')
+
+def forgot_passwd(request):
+    return render(request,'customer/forgot_passwd.html')
