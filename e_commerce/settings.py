@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,12 +81,20 @@ WSGI_APPLICATION = 'e_commerce.wsgi.application'
 
 DATABASES={
    'default':{
-      'ENGINE':'django.db.backends.postgresql_psycopg2',
-      'NAME':'db_ecom',
-      'USER':'postgres',
-      'PASSWORD':'root',
-      'HOST':'localhost',
-      'PORT':'5432',
+    #   'ENGINE':'django.db.backends.postgresql_psycopg2',
+    #   'NAME':'db_ecom',
+    #   'USER':'postgres',
+    #   'PASSWORD':'root',
+    #   'HOST':'localhost',
+    #   'PORT':'5432',
+
+    'Host':'ec2-18-210-191-5.compute-1.amazonaws.com',
+'Database':'d2erefgo7s3eqi',
+"User":'hlezmckhnlnvfm',
+'Port':'5432',
+'Password':'7438d07e488610a3b70b84e440907a72b17057e1b629ca067894a16ebd7f3928'
+
+
    }
 }
 
