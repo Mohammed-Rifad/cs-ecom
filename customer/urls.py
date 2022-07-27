@@ -23,7 +23,8 @@ urlpatterns = [
     path('profile', views.view_profile, name='profile'),
     path('edit-profile', views.update_profile, name='update_profile'),
     path('password-otp', views.send_otp, name='send_otp'),
-    path('forgot-passwd', views.forgot_passwd, name='forgot')
+    path('forgot-passwd', views.forgot_passwd, name='forgot'),
+    path('check_avilable/',views.check_avilable,name="check_available")
 
 
 

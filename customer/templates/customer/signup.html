@@ -7,7 +7,7 @@
                 <br>
                 <!-- <h5 class='alert alert-success' id='msg'>Product Added Succesfully</h5> -->
                 <h3 class="login-head">Signup</h3><br>
-                {{msg}}
+                <span style="color: green;">{{msg}}</span>
                 <form action="{% url 'customer:signup' %}" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
@@ -76,6 +76,7 @@
                     <div class="form-group">
                         <label for="">Email</label>
                         <input type="email" id="userEmail" class="form-control input-sm chat-input" placeholder="Enter your Email" name="email" />
+                        <span id="s_email"></span>
                     </div>
                     <div class="form-group">
                         <h6 id="pswerror" name="err" style="color: brown;"></h6>
@@ -131,6 +132,37 @@
         }
 
     }
+
+
+    $("#userEmail").change(function () {
+        
+        $.ajax({
+          url: "check_avilable/",
+          type: "GET",
+          data: {
+            email: $("#userEmail").val(),
+            
+          },
+          success: function (response) {
+            if (response.isAvailable == true) {
+              $("#btn").attr({ "disabled": true })
+              $("#userEmail").css({ "border-color": "red" })
+              $('#s_email').html("email already exist")
+              $("#s_email").css({ "color": "red" })
+            }
+            else {
+              $("#userEmail").css({ "border-color": "green" })
+              $("#btn").attr({ "disabled": false })
+              $('#s_email').html("email available")
+              $("#s_email").css({ "color": "green" })
+            }
+    
+    
+          }
+    
+        })
+    })
+    
 
 //     $('btn').click(function(){
 //         var msgBox=document.$('#msg')

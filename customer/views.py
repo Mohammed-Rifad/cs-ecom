@@ -89,7 +89,7 @@ def signup(request):
                 msg='Registration Successfull'
             else:
                 msg='Email Exist'   
-            return render(request,'customer/signup.html',{'msg':msg,})
+            return render(request,'customer/signup.html',{'msg':msg})
 
     return render(request,'customer/signup.html')
 
@@ -99,14 +99,16 @@ def login(request):
         
         user_name=request.POST['user_name']
         passwd=request.POST['passwd']
-
+       
         if '@' in user_name:
             customer_exist=Customer.objects.filter(email=user_name,passwd=passwd).exists()
-            
+            print(customer_exist)
             if customer_exist:
+                
                 customer=Customer.objects.get(email=user_name,passwd=passwd)
                 request.session['cust_id']=customer.id
                 if customer.status=='otpverify':
+                   
                     otp = randint(1000, 9999)
                     send_mail(
                         'please verify your otp',
@@ -125,10 +127,12 @@ def login(request):
         elif user_name.isdigit():
 
             seller_exist=Resellers.objects.filter(user_id=user_name,passwd=passwd).exists()
+            
             if seller_exist:
                 seller_data=Resellers.objects.get(user_id=user_name,passwd=passwd)
                
                 if seller_data.status=='active':
+                    
                     request.session['s_id']=seller_data.id
                     return redirect('reseller:reseller_home')
                 
@@ -161,7 +165,7 @@ def search_products(request):
     # search data based on keyword
     if request.method == "POST":
         search_word = request.POST['searchdata']
-        search_list=search_word.split(' ')
+        # search_list=search_word.split(' ')
         print(search_word)
         srch_products=Products.objects.filter(Q(vendor__icontains=search_word)|Q(title__icontains=search_word)| Q(category__icontains=search_word)|Q(subcategory__icontains=search_word),status='active' )
 
@@ -342,3 +346,11 @@ def send_otp(request):
 
 def forgot_passwd(request):
     return render(request,'customer/forgot_passwd.html')
+
+def check_avilable(request):
+    email=request.GET["email"]
+   
+    date_avilble=Customer.objects.filter(email=email).exists()
+    
+   
+    return JsonResponse({'isAvailable': date_avilble})

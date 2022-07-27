@@ -11,12 +11,17 @@ def reseller_request(request):
     request_data=Resellers.objects.filter(status='inactive')
 
     if request.method=='POST':
+
+        rqst=request.POST['req_id']
+        reseller=Resellers.objects.get(id=rqst)
+
         if 'approve' in request.POST:
-             
-            rqst=request.POST['req_id']
-            reseller=Resellers.objects.get(id=rqst)
             reseller.status='active'
-            reseller.save()
+            
+        if 'reject' in request.POST:
+            reseller.status='reject'
+        
+        reseller.save()
     return render(request,'resellers_request.html',{'request_data':request_data,})
 
 

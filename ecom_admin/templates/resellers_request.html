@@ -2,8 +2,7 @@
 <div style="min-height: 420px;">
     
     {% if request_data %}
-    <form action="" method="POST">
-        {% csrf_token %}
+   
     <table class="table table-hover">
 
         <tr>
@@ -21,7 +20,8 @@
         </tr>
 
         {% for data in request_data %}
-
+        <form action="" method="POST">
+            {% csrf_token %}
             <tr>
                 <td>{{data.request_date}}</td>
                 <td>{{data.cmp_name|title}}</td>
@@ -32,14 +32,15 @@
                 <td>{{data.acc_holder}}</td>
                 <td>{{data.acc_no}}</td>
                 <td>{{data.acc_ifsc}}</td>
-                <td><button name="approve" class="btn btn-success">Activate</button></td>
-                <td><button href="" name="reject" class="btn btn-danger">Reject</button></td>
+                <td><button name="approve" class="btn btn-success">Active</button></td>
+                <td><button name="reject" class="btn btn-danger">Reject</button></td>
                 <td><input type="hidden" value="{{data.id}}" name="req_id" id=""></td>
             </tr>
+        </form>
 
         {% endfor %}
     </table>
-</form>
+
 </div>
 
 {% else %}
